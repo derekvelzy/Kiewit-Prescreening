@@ -6,7 +6,7 @@ import {Slider} from '@material-ui/core';
 import {Select, TextField, MenuItem, FormControl, InputLabel, Button} from '@material-ui/core';
 import Employee from './Employee';
 
-interface EmployeeData {
+export interface EmployeeData {
   name: string;
   department: string;
   age: number;
@@ -17,9 +17,9 @@ const App = () => {
   const [search, setSearch] = useState<string>('');
   const [departments, setDepartments] = useState<string[]>([]);
   const [selectedDept, setSelectedDept] = useState<string>('');
-  const [range, setRange] = useState([18, 50]);
-  const [newEmployeeName, setNewEmployeeName] = useState('');
-  const [newEmployeeDept, setNewEmployeeDept] = useState('');
+  const [range, setRange] = useState<number[]>([18, 50]);
+  const [newEmployeeName, setNewEmployeeName] = useState<string>('');
+  const [newEmployeeDept, setNewEmployeeDept] = useState<string>('');
   const [newEmployeeAge, setNewEmployeeAge] = useState<string>('');
 
   useEffect(() => {
@@ -32,7 +32,6 @@ const App = () => {
       url: "http://localhost:8020/request",
     })
     .then((response) => {
-      console.log('resp', response.data);
       setData(response.data);
       let depts = response.data.reverse().map((d) => d.department);
       let arr: string[] = Array.from(new Set(depts));
@@ -82,7 +81,7 @@ const App = () => {
             value={selectedDept}
             onChange={(e) => setSelectedDept(e.target.value as string)}
           >
-            {departments.map((d) => <MenuItem value={d}>{d}</MenuItem>)}
+            {departments.map((d) => <MenuItem value={d} key={d}>{d}</MenuItem>)}
           </Select>
         </FormControl>
         <div>
@@ -90,6 +89,7 @@ const App = () => {
           <Slider
             style={{ width: "300px" }}
             value={range}
+            min={18}
             max={100}
             onChange={handleSlide}
             valueLabelDisplay="auto"
@@ -114,7 +114,7 @@ const App = () => {
             value={newEmployeeDept}
             onChange={(e) => setNewEmployeeDept(e.target.value as string)}
           >
-            {departments.map((d) => <MenuItem value={d}>{d}</MenuItem>)}
+            {departments.map((d) => <MenuItem value={d} key={d}>{d}</MenuItem>)}
           </Select>
         </FormControl>
         <TextField
@@ -135,9 +135,9 @@ const App = () => {
                 (d.age >= range[0] && d.age <= range[1])
               ) {
               if (selectedDept === '' || selectedDept === 'All Departments') {
-                return <Employee name={d.name} department={d.department} age={d.age} />
+                return <Employee name={d.name} department={d.department} age={d.age} key={d.name}/>
               } else if (d.department === selectedDept) {
-                return <Employee name={d.name} department={d.department} age={d.age} />
+                return <Employee name={d.name} department={d.department} age={d.age} key={d.name} />
               }
             }
           })

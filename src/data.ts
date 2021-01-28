@@ -1,3 +1,5 @@
+// DATA STORED IN DATABASE
+
 export const employee_data = [
   {
     name: "Beyonce Knowles",

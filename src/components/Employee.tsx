@@ -1,25 +1,16 @@
 import * as React from "react";
-import {useState, useEffect} from "react";
 import styled from 'styled-components';
+import {EmployeeData} from './App';
 
-interface EmployeeData {
-  name: string;
-  department: string;
-  age: number;
-}
-
-const Employee: React.FC<EmployeeData> = ({name, department, age}) => {
-
-  return (
-    <EmployeeCard>
-      <Name>{name}</Name>
-      <Bottom>
-        <div>age: {age}</div>
-        <div>{department}</div>
-      </Bottom>
-    </EmployeeCard>
-  )
-};
+const Employee: React.FC<EmployeeData> = ({name, department, age}) => (
+  <EmployeeCard>
+    <Name>{name}</Name>
+    <Bottom>
+      <div>age: {age}</div>
+      <div>{department}</div>
+    </Bottom>
+  </EmployeeCard>
+);
 
 const Bottom = styled.div`
   display: flex;

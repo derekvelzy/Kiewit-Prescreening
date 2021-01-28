@@ -2,7 +2,7 @@
   "name": "kiewit",
   "version": "1.0.0",
   "description": "Prescreening",
-  "main": "index.js",
+  "main": "index.html",
   "scripts": {
     "dev": "webpack",
     "webpack-server": "webpack serve",
@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/derekvelzy/Kiewit-Prescreening.git"
   },
-  "author": "",
+  "author": "Derek Velzy",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/derekvelzy/Kiewit-Prescreening/issues"
