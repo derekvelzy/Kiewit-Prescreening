@@ -1,7 +1,7 @@
 # Kiewit Prescreening #
 
 ## Demo ##
-![Link to Demo Video on Youtube](https://www.youtube.com/watch?v=8fTdodzjTAM&feature=youtu.be)
+[Link to Demo Video on Youtube](https://www.youtube.com/watch?v=8fTdodzjTAM&feature=youtu.be)
 
 ## Overview ##
 App to search through employees by name, and filter by department & age, as well as add new employees.
