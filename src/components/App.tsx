@@ -1,9 +1,9 @@
 import * as React from "react";
 import {useState, useEffect} from "react";
-import {employee_data} from '../data';
 import styled from 'styled-components';
+import axios from 'axios';
 import {Slider} from '@material-ui/core';
-import {Select, TextField, MenuItem, FormControl, InputLabel} from '@material-ui/core';
+import {Select, TextField, MenuItem, FormControl, InputLabel, Button} from '@material-ui/core';
 import Employee from './Employee';
 
 interface EmployeeData {
@@ -18,18 +18,45 @@ const App = () => {
   const [departments, setDepartments] = useState<string[]>([]);
   const [selectedDept, setSelectedDept] = useState<string>('');
   const [range, setRange] = useState([18, 50]);
+  const [newEmployeeName, setNewEmployeeName] = useState('');
+  const [newEmployeeDept, setNewEmployeeDept] = useState('');
+  const [newEmployeeAge, setNewEmployeeAge] = useState<string>('');
 
   useEffect(() => {
-    setData(employee_data);
-    let depts = employee_data.map((d) => d.department);
-    let arr = Array.from(new Set(depts));
-    arr.unshift('All Departments');
-    setDepartments(arr);
+    getData();
   }, []);
 
-  const handleChange = async (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSelectedDept(event.target.value as string);
-  };
+  const getData = () => {
+    axios({
+      method: "get",
+      url: "http://localhost:8020/request",
+    })
+    .then((response) => {
+      console.log('resp', response.data);
+      setData(response.data);
+      let depts = response.data.reverse().map((d) => d.department);
+      let arr: string[] = Array.from(new Set(depts));
+      arr.unshift('All Departments');
+      setDepartments(arr);
+    })
+  }
+
+  const submit = async () => {
+    await axios({
+      method: "post",
+      url: "http://localhost:8020/post",
+      data: {
+        name: newEmployeeName,
+        department: newEmployeeDept,
+        age: Number.parseInt(newEmployeeAge),
+      }
+    })
+    .then((response) => {
+      if (response.data.message) {
+        getData();
+      }
+    })
+  }
 
   const handleSlide = (event: any, newValue: number | number[]) => {
     setRange(newValue as number[]);
@@ -38,37 +65,68 @@ const App = () => {
   return (
     <Container>
       <Head>Kiewit Employee Data</Head>
+      <div style={{ marginBottom: "10px", fontSize: "18px" }}>Search for Employee</div>
       <Inputs>
-      <TextField
-        style={{ width: "320px", marginRight: "20px" }}
-        variant="outlined"
-        label="Search Name"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <FormControl variant="outlined" style={{ marginRight: "30px" }}>
-        <InputLabel>Departments</InputLabel>
-        <Select
-          style={{ width: "180px" }}
-          id="demo-simple-select"
-          value={selectedDept}
-          onChange={handleChange}
-        >
-          {departments.map((d) => <MenuItem value={d}>{d}</MenuItem>)}
-        </Select>
-      </FormControl>
-      <div>
-        <Age>Age: {range[0]} - {range[1]}</Age>
-        <Slider
-          style={{ width: "300px" }}
-          value={range}
-          max={100}
-          onChange={handleSlide}
-          valueLabelDisplay="auto"
-          aria-labelledby="range-slider"
+        <TextField
+          style={{ width: "320px", marginRight: "20px" }}
+          variant="outlined"
+          label="Search Name"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-      </div>
+        <FormControl variant="outlined" style={{ marginRight: "30px" }}>
+          <InputLabel>Departments</InputLabel>
+          <Select
+            style={{ width: "180px" }}
+            id="demo-simple-select"
+            value={selectedDept}
+            onChange={(e) => setSelectedDept(e.target.value as string)}
+          >
+            {departments.map((d) => <MenuItem value={d}>{d}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <div>
+          <Age>Age: {range[0]} - {range[1]}</Age>
+          <Slider
+            style={{ width: "300px" }}
+            value={range}
+            max={100}
+            onChange={handleSlide}
+            valueLabelDisplay="auto"
+            aria-labelledby="range-slider"
+          />
+        </div>
       </Inputs>
+      <div style={{ marginBottom: "10px", fontSize: "18px" }}>Insert New Employee</div>
+      <Inputs>
+        <TextField
+          style={{ width: "320px", marginRight: "20px" }}
+          variant="outlined"
+          label="First and Last Name"
+          value={newEmployeeName}
+          onChange={(e) => setNewEmployeeName(e.target.value)}
+        />
+        <FormControl variant="outlined" style={{ marginRight: "30px" }}>
+          <InputLabel>Department</InputLabel>
+          <Select
+            style={{ width: "180px" }}
+            id="demo-simple-select"
+            value={newEmployeeDept}
+            onChange={(e) => setNewEmployeeDept(e.target.value as string)}
+          >
+            {departments.map((d) => <MenuItem value={d}>{d}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <TextField
+          style={{ width: "100px", marginRight: "20px" }}
+          variant="outlined"
+          label="Age"
+          value={newEmployeeAge}
+          onChange={(e) => setNewEmployeeAge(e.target.value)}
+        />
+        <Button variant="contained" color="primary" onClick={submit}>Submit</Button>
+      </Inputs>
+      <div style={{ fontSize: "18px" }}>Employees</div>
       <div>
         {
           data.map((d) => {
@@ -97,18 +155,13 @@ const Container = styled.div`
   margin-left: 20px;
 `
 const Head = styled.div`
+  font-weight: bold;
   font-size: 25px;
-  margin: 15px 0px;
+  margin: 18px 0px;
 `
 const Inputs = styled.div`
   display: flex;
-`
-const Search = styled.input`
-  width: 320px;
-  margin-right: 20px;
-  padding: 5px 10px;
-  border-radius: 6px;
-  border: 1px solid rgb(140, 140, 140);
+  margin-bottom: 20px;
 `
 
 export default App;
